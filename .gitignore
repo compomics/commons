@@ -1,0 +1,10 @@
+*.iml
+.idea/
+*.class
+*/*/target
+model/target/
+fileutilities/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+fileutilities/target/
+fileutilities/src/main/java/musings
+datastructures/target/
+helpers/target/
