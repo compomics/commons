@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * programmatic representation of a spectrum
  * Created by Davy Maddelein on 24/04/2015.
  */
 public class Spectrum {
@@ -21,6 +22,9 @@ public class Spectrum {
     private Double precursorIntensity;
     private List<Integer> charges = new ArrayList<>();
 
+
+    public Spectrum() {}
+
     public Spectrum(String title, List<Peak> peaks,Integer... charges) {
         this.title = title;
         this.peaks = peaks;
@@ -30,10 +34,6 @@ public class Spectrum {
     public Spectrum(String title,Integer... charges) {
         this.title = title;
         Arrays.stream(charges).forEach(this.charges::add);
-    }
-
-    public Spectrum() {
-        
     }
 
     public String getTitle() {

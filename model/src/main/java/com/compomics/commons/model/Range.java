@@ -1,7 +1,8 @@
 package com.compomics.commons.model;
 
 /**
- * general class to give a range between two numbers, as this class uses the Number abstraction, please keep in mind the rules when changing the values to a different precision
+ * general class to give a range between two numbers, as this class uses the Number abstraction,
+ * please keep in mind the rules when changing the values to a different precision
  * Created by Davy Maddelein on 23/04/2015.
  */
 public class Range {
@@ -24,5 +25,9 @@ public class Range {
 
     public void setEnd(Number end) {
         this.end = end;
+    }
+
+    public void setStart(Number start) {
+        this.start = start;
     }
 }

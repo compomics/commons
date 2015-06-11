@@ -8,6 +8,6 @@ import java.util.regex.Pattern;
 public class RegexUtilities {
 
     public static final Pattern doublePattern = Pattern.compile("(\\d*\\.\\d*)");
-    public static final Pattern peakPattern = Pattern.compile(doublePattern.pattern()+"\\t"+doublePattern.pattern());
+    public static final Pattern MGFPeakPattern = Pattern.compile(doublePattern.pattern()+"\\s"+doublePattern.pattern());
 
 }

@@ -48,7 +48,7 @@ public class FastaWithDecoyManager implements FileManager<String,Protein> {
 
     @Override
     public void addToStore(Protein entry) throws StoreAccessException {
-
+        decoyStrategy.produceDecoySequence(entry);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.compomics.commons.model.exceptions;
 
 /**
- * Created by svend on 24/04/2015.
+ * Created by Davy Maddelein on 24/04/2015.
  */
 public class MalformedFileException extends Exception {
 

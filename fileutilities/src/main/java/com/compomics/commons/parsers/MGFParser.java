@@ -1,5 +1,7 @@
 package com.compomics.commons.parsers;
 
+import com.compomics.commons.IO.LineReader;
+import com.compomics.commons.formatters.MGFFormatter;
 import com.compomics.commons.generalutilities.RegexUtilities;
 import com.compomics.commons.model.Peak;
 import com.compomics.commons.model.Range;
@@ -32,62 +34,37 @@ public class MGFParser {
      * @throws IOException            if there was a problem reading from the file
      */
     public List<Spectrum> parse(Path file, String blockSeparator) throws MalformedFileException, IOException {
-        Spectrum spectrumToAdd = null;
 
         List<Spectrum> parsedSpectra = new ArrayList<>();
-        List<Peak> peaksToAddToSpectrum = new ArrayList<>();
 
-        LineNumberReader reader = new LineNumberReader(new FileReader(file.toFile()));
+        LineReader reader = new LineReader(new FileReader(file.toFile()));
 
         String s = reader.readLine();
 
         try {
+            StringBuilder builder = new StringBuilder();
             while (s != null) {
-                if (s.toUpperCase().contains(blockSeparator.toUpperCase())) {
-                    if (spectrumToAdd != null) {
-                        spectrumToAdd.addPeaks(peaksToAddToSpectrum);
-                        peaksToAddToSpectrum.clear();
-                        parsedSpectra.add(spectrumToAdd);
-                    }
-                    spectrumToAdd = new Spectrum();
+                if (s.toUpperCase().contains(blockSeparator.toUpperCase()) && builder.length() > 0) {
+                    parsedSpectra.add(MGFFormatter.fromFormat(builder.toString()));
+                    builder = new StringBuilder();
                 }
-                if (s.toUpperCase().startsWith("TITLE")) {
-                    spectrumToAdd.setTitle(URLDecoder.decode(s.substring(s.indexOf("TITLE=") + 6), "UTF-8"));
-                } else if (s.toUpperCase().startsWith("PEPMASS=")) {
-                    String[] pepmasses = s.substring(s.indexOf("PEPMASS=") + 8).split("\\s");
-                    spectrumToAdd.setPrecursor(Double.parseDouble(pepmasses[0]));
-                    if (pepmasses.length > 1) {
-                        spectrumToAdd.setPrecursorIntensity(Double.parseDouble(pepmasses[1]));
-                    } else {
-                        spectrumToAdd.setPrecursorIntensity(new Double(0.0));
-                    }
-                } else if (s.startsWith("RTINSECONDS=")) {
-                    try {
-                        Matcher matcher = RegexUtilities.doublePattern.matcher(s);
-                        if (matcher.find()) {
-                            Range retentionRange = new Range(Double.parseDouble(matcher.toMatchResult().group()), null);
-                            if (s.contains("-") && matcher.find()) {
-                                retentionRange.setEnd(Double.parseDouble(matcher.group()));
-                            }
-                            spectrumToAdd.setRetentionTime(retentionRange);
-                        }
-                    } catch (NumberFormatException e) {
-                        MalformedFileException ex = new MalformedFileException("could not parse double: " + s);
-                        ex.initCause(e);
-                        throw ex;
-                    }
-                } else if (s.startsWith("CHARGE=")) {
-                    for (String aCharge : commaPattern.split(chargePattern.matcher(s.substring(s.indexOf("CHARGE=") + 7)).replaceAll(""))) {
-                        if (aCharge.endsWith("+") || !aCharge.equalsIgnoreCase("Mr")) {
-                            spectrumToAdd.addCharge(Integer.parseInt(String.valueOf(aCharge.charAt(0))));
-                        } else if (aCharge.endsWith("-")) {
-                            spectrumToAdd.addCharge(-Integer.parseInt(String.valueOf(aCharge.charAt(0))));
-                        }
-                    }
-                    if (spectrumToAdd.getCharges().isEmpty()) {
-                        spectrumToAdd.addCharge(1);
-                    }
-                }
+                builder.append(s);
+                s = reader.readLine();
+            }
+
+            if (builder.length() > 0) {
+                parsedSpectra.add(MGFFormatter.fromFormat(builder.toString()));
+            }
+
+        } catch (NullPointerException | UnsupportedEncodingException e) {
+            //if null pointer happens the general order of the file is not managed or the starting line for spectra is not correct
+            MalformedFileException ex = new MalformedFileException("could not read mgf file\nstarting line of a spectrum was: " + blockSeparator);
+            ex.initCause(e);
+            throw ex;
+        }
+        return parsedSpectra;
+    }
+
 //                else if(line.startsWith("TOLU"))
 //
 //                {
@@ -123,60 +100,7 @@ public class MGFParser {
 //                {
 //                    // sequence tag not implemented
 //                }
-                else if (s.startsWith("SCANS=")) {
-                    try {
-                        Matcher matcher = numberPattern.matcher(s);
-                        while (matcher.find()) {
-                            if (!matcher.group().isEmpty()) {
-                                spectrumToAdd.addScanNumber(Integer.parseInt(matcher.group()));
-                            }
-                        }
-                        if (spectrumToAdd.getScanNumbers().isEmpty()) {
-                            throw new IllegalArgumentException("Cannot parse scan number: " + s + "\nreason: no scan number found");
-                        }
-
-                    } catch (NumberFormatException | IllegalStateException e) {
-                        throw new MalformedFileException("Cannot parse scan number: " + s);
-                    }
-                } else {
-                    Matcher matcher = RegexUtilities.peakPattern.matcher(s);
-                    if (matcher.find()) {
-                        matcher = RegexUtilities.doublePattern.matcher(s);
-                        Peak currentPeak = new Peak();
-                        try {
-                            if (matcher.find()) {
-                                currentPeak.setMZ(Double.parseDouble(matcher.group()));
-                            }
-                            if (matcher.find()) {
-                                currentPeak.setIntensity(Double.parseDouble(matcher.group()));
-                            }
-                            peaksToAddToSpectrum.add(currentPeak);
-                        } catch (NumberFormatException e) {
-                            MalformedFileException ex = new MalformedFileException("could not parse a peak set\nline was " + s);
-                            ex.initCause(e);
-                            throw ex;
-                        }
-                    }
-                }
-                s = reader.readLine();
-            }
-
-        } catch (NullPointerException | UnsupportedEncodingException e) {
-            //if null pointer happens the general order of the file is not managed or the starting line for spectra is not correct
-            MalformedFileException ex = new MalformedFileException("could not read mgf file\nstarting line of spectra is: " + blockSeparator);
-            ex.initCause(e);
-            throw ex;
-        }
-        return parsedSpectra;
-    }
-
-
 //
-//    else if(line.startsWith("TAG"))
-//
-//    {
-//        // sequence tag not implemented
-//    }
 //
 //    else if(line.startsWith("RAWSCANS"))
 //

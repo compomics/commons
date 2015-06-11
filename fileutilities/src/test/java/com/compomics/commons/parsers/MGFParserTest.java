@@ -100,8 +100,5 @@ public class MGFParserTest {
         assertThat(testSpectra.get(128).getScanNumbers().size(),is(2));
         assertThat(testSpectra.get(128).getScanNumbers().get(0),is(2692));
         assertThat(testSpectra.get(128).getScanNumbers().get(1),is(2703));
-
-
-
     }
 }
