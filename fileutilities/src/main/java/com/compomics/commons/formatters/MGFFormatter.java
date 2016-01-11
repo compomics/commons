@@ -59,6 +59,14 @@ public class MGFFormatter {
         return builder.toString();
     }
 
+    /**
+     *
+     * @param MGFTextBlock
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws MalformedFileException
+     * @throws IllegalArgumentException
+     */
     public static Spectrum fromFormat(String MGFTextBlock) throws UnsupportedEncodingException, MalformedFileException {
         Spectrum readSpectrum = new Spectrum();
 
@@ -118,11 +126,11 @@ public class MGFFormatter {
                     }
 
                     if (readSpectrum.getScanNumbers().isEmpty()) {
-                        throw new IllegalArgumentException("Cannot parse scan number: " + splitMGFBlock + "\nreason: no scan number found");
+                        throw new IllegalArgumentException("Cannot parse scan number: " + s + "\nreason: no scan number found");
                     }
 
-                } catch (NumberFormatException | IllegalStateException e) {
-                    throw new MalformedFileException("Cannot parse scan number: " + splitMGFBlock);
+                } catch (NumberFormatException e) {
+                    throw new MalformedFileException("Cannot parse scan number: " + s);
                 }
             } else {
                 Matcher matcher = RegexUtilities.MGFPeakPattern.matcher(s);
