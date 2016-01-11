@@ -32,6 +32,7 @@ public class FastaParser {
                     //add limiting check for protein store to avoid growing
                     if (sequenceBuilder.length() > 0) {
                         proteinStore.add(new Protein(header, sequenceBuilder.toString().trim()));
+                        sequenceBuilder = new StringBuilder();
                     }
                     header = line;
                 } else {

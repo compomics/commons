@@ -24,6 +24,8 @@ public class MGFParser {
     private static final Pattern numberPattern = Pattern.compile("[0-9]*");
     private static final Pattern chargePattern = Pattern.compile(" and ");
 
+    private MGFFormatter mgfFormatter = new MGFFormatter();
+
 
     /**
      * indexes an mgf file into spectra
@@ -45,7 +47,7 @@ public class MGFParser {
             StringBuilder builder = new StringBuilder();
             while (s != null) {
                 if (s.toUpperCase().contains(blockSeparator.toUpperCase()) && builder.length() > 0) {
-                    parsedSpectra.add(MGFFormatter.fromFormat(builder.toString()));
+                    parsedSpectra.add(mgfFormatter.fromFormat(builder.toString()));
                     builder = new StringBuilder();
                 }
                 builder.append(s);
@@ -53,7 +55,7 @@ public class MGFParser {
             }
 
             if (builder.length() > 0) {
-                parsedSpectra.add(MGFFormatter.fromFormat(builder.toString()));
+                parsedSpectra.add(mgfFormatter.fromFormat(builder.toString()));
             }
 
         } catch (NullPointerException | UnsupportedEncodingException e) {

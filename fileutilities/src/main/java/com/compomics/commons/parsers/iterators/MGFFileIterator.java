@@ -20,6 +20,7 @@ public class MGFFileIterator implements Iterator<Spectrum> {
     LineReader reader;
     String blockSeparator;
     String currentLine;
+    MGFFormatter MGFFormatter = new MGFFormatter();
 
     public MGFFileIterator(Path MGFFilePath, String aBlockSeparator) throws FileNotFoundException {
         reader = new LineReader(new FileReader(MGFFilePath.toFile()));

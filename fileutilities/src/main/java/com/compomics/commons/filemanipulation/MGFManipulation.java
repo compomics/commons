@@ -19,12 +19,17 @@ import java.util.List;
  */
 public class MGFManipulation {
 
+    //could be non static
+
+   static MGFFormatter mgfFormatter = new MGFFormatter();
+
 
     public static boolean joinFiles(Writer outWriter, FileManager<?,Spectrum>... filesToJoin) throws IOException, InvalidArgumentException {
 
+
         for (FileManager<?,Spectrum> aFileManager : filesToJoin){
             for(Spectrum aSpectrum : aFileManager.retrieveAllFromStore()){
-                outWriter.write(MGFFormatter.toFormat(aSpectrum));
+                outWriter.write(mgfFormatter.toFormat(aSpectrum));
             }
         }
 
@@ -89,7 +94,7 @@ public class MGFManipulation {
             if(partitionSize % i == 0){
                 outWriter = new BufferedWriter(new FileWriter(outputFolder+"exported_spectra_"+i+".mgf"));
             }
-            outWriter.write(MGFFormatter.toFormat(allSpectra.get(i)));
+            outWriter.write(mgfFormatter.toFormat(allSpectra.get(i)));
         }
         return true;
     }

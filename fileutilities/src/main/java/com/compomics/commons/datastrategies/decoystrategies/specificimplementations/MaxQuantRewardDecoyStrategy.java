@@ -18,6 +18,7 @@ public class MaxQuantRewardDecoyStrategy extends RewardDecoyStrategy {
                     aSequence.substring((int) Math.ceil(aSequence.length() / 2), aSequence.length()))
                     .reverse()
                     .append(aSequence.substring(0, (int) Math.ceil(aSequence.length()))).toString();
+
         } else {
 
             decoySequence.append(aSequence.substring(0, (int) Math.ceil(aSequence.length() / 2)));

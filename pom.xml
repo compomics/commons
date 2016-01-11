@@ -27,6 +27,7 @@
         <module>helpers</module>
         <module>datastructures</module>
         <module>fileutilities</module>
+        <module>statistics</module>
     </modules>
 
     <dependencyManagement>

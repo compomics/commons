@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Created by svend on 05/10/2015.
+ * Created by Davy Maddelein on 05/10/2015.
  */
 public class FastaFileIteratorTest {
 

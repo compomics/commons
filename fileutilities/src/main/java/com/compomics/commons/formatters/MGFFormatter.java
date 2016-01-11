@@ -1,6 +1,7 @@
 package com.compomics.commons.formatters;
 
 import com.compomics.commons.generalutilities.RegexUtilities;
+import com.compomics.commons.interfaces.FileFormatter;
 import com.compomics.commons.model.Peak;
 import com.compomics.commons.model.Range;
 import com.compomics.commons.model.Spectrum;
@@ -15,14 +16,15 @@ import java.util.stream.Collectors;
 /**
  * Created by Davy Maddelein on 08/05/2015.
  */
-public class MGFFormatter {
+public class MGFFormatter implements FileFormatter<String,Spectrum> {
 
 
     private static final Pattern commaPattern = Pattern.compile(",");
     private static final Pattern numberPattern = Pattern.compile("[0-9]*");
     private static final Pattern chargePattern = Pattern.compile(" and ");
 
-    public static String toFormat(Spectrum aSpectrum) {
+    @Override
+    public String toFormat(Spectrum aSpectrum) {
 
         StringBuilder builder = new StringBuilder().append("BEGIN IONS").append(System.lineSeparator());
 
@@ -67,7 +69,8 @@ public class MGFFormatter {
      * @throws MalformedFileException
      * @throws IllegalArgumentException
      */
-    public static Spectrum fromFormat(String MGFTextBlock) throws UnsupportedEncodingException, MalformedFileException {
+    @Override
+    public Spectrum fromFormat(String MGFTextBlock) throws UnsupportedEncodingException, MalformedFileException {
         Spectrum readSpectrum = new Spectrum();
 
         String[] splitMGFBlock = MGFTextBlock.split("\n");
