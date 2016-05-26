@@ -29,33 +29,31 @@ public abstract class OboFlatFileParser<T extends BaseOntologyTerm> {
     private OntologyTermFactory<T> termFactory;
 
 
-    public Set<T> parseOboFile(Path oboFile) throws IOException {
+    public Map<String,T> parseOboFile(Path oboFile) throws IOException {
 
         StringBuilder termBlock = new StringBuilder();
 
-        LineReader reader = new LineReader(new FileReader(oboFile.toFile()));
-        String line = reader.readLine();
+        Map<String,T> possibleHeaders = new HashMap<>();
 
-        Set<T> possibleHeaders = new HashSet<>();
+        try(LineReader reader = new LineReader(new FileReader(oboFile.toFile()))){
+        String line = reader.readLine();
 
         while (line != null) {
             //only need terms at the moment, can add default typedefs and instances later
             if (line.toLowerCase().contains("[term]")) {
                 if (termBlock.length() != 0) {
                     try {
-                        possibleHeaders.add(createBlock(termBlock.toString()));
-                    }catch (MalformedFileException e) {
+                        T aHeader = createBlock(termBlock.toString());
+                        possibleHeaders.put(aHeader.getOntology(),aHeader);
+                    }catch (MalformedFileException|ReflectiveOperationException e) {
                         throw new IOException("could not parse provided file", e);
-                    } catch (ReflectiveOperationException e) {
-                        e.printStackTrace();
-                        //todo think of a proper exception to throw in this case
                     }
                     termBlock = new StringBuilder();
                 }
             }
             termBlock.append(line);
             line = reader.readLine();
-        }
+        }}
         return possibleHeaders;
     }
 

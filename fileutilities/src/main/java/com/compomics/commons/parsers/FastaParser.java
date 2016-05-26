@@ -18,12 +18,15 @@ import java.util.*;
 public class FastaParser {
 
 
-    public List<Protein> parse(Path file, String blockSeparator) throws IOException, MalformedFileException {
+    public List<? extends Protein> parse(Path file) throws IOException, MalformedFileException {
+        return this.parse(file,">");
+    }
+
+    public List<? extends Protein> parse(Path file, String blockSeparator) throws IOException, MalformedFileException {
         //THE most naive implementation, structurally and computationally
         List<Protein> proteinStore = new ArrayList<>();
 
-        try {
-            LineReader reader = new LineReader(new FileReader(file.toFile()));
+        try (LineReader reader = new LineReader(new FileReader(file.toFile()))) {
             String line = reader.readLine();
             StringBuilder sequenceBuilder = new StringBuilder();
             String header = "";
@@ -32,7 +35,7 @@ public class FastaParser {
                     //add limiting check for protein store to avoid growing
                     if (sequenceBuilder.length() > 0) {
                         proteinStore.add(new Protein(header, sequenceBuilder.toString().trim()));
-                        sequenceBuilder = new StringBuilder();
+                        sequenceBuilder.setLength(0);
                     }
                     header = line;
                 } else {

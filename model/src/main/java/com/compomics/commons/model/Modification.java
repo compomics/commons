@@ -13,4 +13,32 @@ public class Modification {
     private String name;
     private double weightDifference;
     private List<AminoAcid> targettableAA = new ArrayList<>(20);
+    private String shorthand;
+
+    public Modification(String name, double weightDifference, List<AminoAcid> targettableAA) {
+        this.name = name;
+        this.weightDifference = weightDifference;
+        this.targettableAA = targettableAA;
+        this.shorthand = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getWeightDifference() {
+        return weightDifference;
+    }
+
+    public List<AminoAcid> getTargettableAA() {
+        return targettableAA;
+    }
+
+    public String getShorthand() {
+        return shorthand;
+    }
+
+    public void setShorthand(String shorthand) {
+        this.shorthand = shorthand;
+    }
 }

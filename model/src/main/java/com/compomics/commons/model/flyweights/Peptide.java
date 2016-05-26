@@ -5,6 +5,15 @@ package com.compomics.commons.model.flyweights;
  */
 public class Peptide {
 
+private String sequence;
 
 
+    public Peptide(String aSequence){
+        this.sequence = aSequence;
+    }
+
+    public String getSequence(){
+        return sequence;
+
+    }
 }

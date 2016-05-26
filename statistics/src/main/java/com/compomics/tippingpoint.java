@@ -6,6 +6,9 @@ import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoint;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Period;
 import java.util.List;
 
 /**
@@ -19,7 +22,8 @@ public class TippingPoint {
 
     public static void main(String[] args) {
 
-        for (int anInt : ArrayUtilities.consecutiveInts(50))
+
+        /*for (int anInt : ArrayUtilities.consecutiveInts(50))
 
         {
             points.add(anInt, anInt);
@@ -42,7 +46,7 @@ public class TippingPoint {
             System.out.println(fittedFunction.derivative().value(aPointsList.getY()));
 
 
-        }
+        }*/
 
     }
 

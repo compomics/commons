@@ -13,7 +13,7 @@ public class FindPeaks {
      * @param graph
      * @return
      */
-/**    public static List<DataPoint> findPeaks(List<DataPoint> graph){
+/**    public static List<Tuple> findPeaks(List<Tuple> graph){
         graph.stream().sorted(Comparator.comparingDouble(value -> value.getX().doubleValue()))
                 .forEach();
     }

@@ -13,11 +13,16 @@ public class ChainedList<E> extends ArrayList<E> {
 
     public E getNext() throws IllegalAccessException {
         locationPointer=+1;
-        if (locationPointer > this.size()){
+        if (locationPointer > this.size() || locationPointer < 0){
             //return to start
             locationPointer = 0;
         }
         return this.get(locationPointer);
     }
 
+    @Override
+    public E get(int index) {
+        locationPointer = index;
+        return super.get(index);
+    }
 }

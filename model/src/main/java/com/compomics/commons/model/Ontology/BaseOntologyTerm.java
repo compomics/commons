@@ -66,4 +66,19 @@ public class BaseOntologyTerm {
         return xrefs;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof BaseOntologyTerm){
+            if(this.ontology.equals(((BaseOntologyTerm) obj).getOntology())){
+            return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return ontology.hashCode();
+    }
 }

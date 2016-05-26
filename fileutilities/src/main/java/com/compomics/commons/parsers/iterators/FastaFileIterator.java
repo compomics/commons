@@ -5,10 +5,7 @@ import com.compomics.commons.formatters.FastaFormatter;
 import com.compomics.commons.model.Protein;
 import com.compomics.commons.model.exceptions.MalformedFileException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -22,8 +19,20 @@ public class FastaFileIterator implements Iterator<Protein> {
     FastaFormatter fastaFormatter = new FastaFormatter();
     String header = "";
 
-    public FastaFileIterator(Path fastaFilePath) throws FileNotFoundException {
+    public FastaFileIterator(Path fastaFilePath) throws IOException {
+        this(fastaFilePath,">");
+    }
+
+    public FastaFileIterator(Path fastaFilePath,String blockSeparator) throws IOException {
         reader = new LineReader(new FileReader(fastaFilePath.toFile()));
+        header = reader.readLine();
+        //check if we actually have a line that starts with the character we need
+        while (header != null && !header.startsWith(blockSeparator)){
+            header = reader.readLine();
+        }
+            if (header == null){
+                throw new EOFException("reached end of file without reading a line starting with "+blockSeparator);
+            }
     }
 
 
@@ -43,22 +52,16 @@ public class FastaFileIterator implements Iterator<Protein> {
 
     @Override
     public Protein next() {
-        String temp = "";
-        StringBuilder sequence = new StringBuilder("");
-        while (temp != null && !temp.contains(">")){
-            try {
-                temp = reader.readLine();
-                sequence.append(temp);
-            } catch (IOException e) {
-                NoSuchElementException ex = new NoSuchElementException("could not parse ");
-                ex.initCause(e);
-                throw ex;
-            }
-        }
-        header = temp;
         try {
+            String temp = reader.readLine();
+            StringBuilder sequence = new StringBuilder(header);
+            while (temp != null && !temp.contains(">")){
+                sequence.append(temp);
+                temp = reader.readLine();
+            }
+            header = temp;
             return fastaFormatter.fromFormat(sequence.toString());
-        } catch (UnsupportedEncodingException | MalformedFileException e) {
+        } catch (MalformedFileException|IOException e) {
             NoSuchElementException ex = new NoSuchElementException("could not parse ");
             ex.initCause(e);
             throw ex;

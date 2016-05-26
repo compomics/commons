@@ -35,8 +35,7 @@ public class FastaIndexer implements BlockReader<Protein> {
     public void indexFileIntoBlocks(Path file, String blockSeparator) throws IOException, MalformedFileException {
         //THE most naive implementation, structurally and computationally
         currentFasta = file;
-        try {
-            LineReader reader = new LineReader(new FileReader(file.toFile()));
+        try (LineReader reader = new LineReader(new FileReader(file.toFile()))) {
             String line = reader.readLine();
             StringBuilder sequenceBuilder = new StringBuilder();
             String header = "";
@@ -44,7 +43,9 @@ public class FastaIndexer implements BlockReader<Protein> {
             while (line != null) {
                 if (line.startsWith(blockSeparator)) {
                     if (sequenceBuilder.length() > 0) {
-                        indexHolder.put(header, new Range(startIndexLocation, (startIndexLocation += startIndexLocation + header.length() + sequenceBuilder.toString().length())));
+                        //
+                        indexHolder.put(header, new Range(startIndexLocation,  startIndexLocation + header.length() + sequenceBuilder.toString().length()));
+                        startIndexLocation += startIndexLocation + header.length() + sequenceBuilder.toString().length();
                     }
                     header = line;
                 } else {
@@ -66,47 +67,48 @@ public class FastaIndexer implements BlockReader<Protein> {
      */
     @Override
     public Protein readBlock(Range range) throws IOException {
-        LineNumberReader reader = new LineNumberReader(new FileReader(currentFasta.toFile()));
         int bytesRead;
-        try {
-            reader.skip((range.getStart().longValue() - 1));
-            String line = reader.readLine();
-            // we are operating on blind faith that the range will be correct, otherwise the result will be nonsensical
-            if (line != null) {
-                bytesRead = line.length();
-                Protein newProtein = new Protein(line);
-                StringBuilder sequenceBuilder = new StringBuilder();
-                while (bytesRead < (range.getEnd().longValue() - range.getStart().longValue())) {
-                    sequenceBuilder.append(line);
-                    line = reader.readLine();
+        try (LineNumberReader reader = new LineNumberReader(new FileReader(currentFasta.toFile()))) {
+            try {
+                reader.skip((range.getStart().longValue() - 1));
+                String line = reader.readLine();
+                // we are operating on blind faith that the range will be correct, otherwise the result will be nonsensical
+                if (line != null) {
                     bytesRead = line.length();
-                }
-                newProtein.setSequence(sequenceBuilder.toString());
-                return newProtein;
-            } else {
-                throw new IOException("could not read from file properly with the given range");
-            }
-
-        } catch (IOException e) {
-            //add some more detail to the error message in case of reading problems
-            StringBuilder builder = new StringBuilder("could not read block ");
-            if (reader.getLineNumber() > 0) {
-                builder.append("at line ").append(reader.getLineNumber());
-            } else {
-                builder.append("from range point ").append(range.getStart());
-                if (range.getEnd().longValue() > range.getStart().longValue()) {
-                    builder.append(" to range point ").append(range.getEnd());
+                    Protein newProtein = new Protein(line);
+                    StringBuilder sequenceBuilder = new StringBuilder();
+                    while (bytesRead < (range.getEnd().longValue() - range.getStart().longValue())) {
+                        sequenceBuilder.append(line);
+                        line = reader.readLine();
+                        bytesRead = line.length();
+                    }
+                    newProtein.setSequence(sequenceBuilder.toString());
+                    return newProtein;
                 } else {
-                    builder.append(", end range was: ").append(range.getEnd());
+                    throw new IOException("could not read from file properly with the given range");
                 }
+
+            } catch (IOException e) {
+                //add some more detail to the error message in case of reading problems
+                StringBuilder builder = new StringBuilder("could not read block ");
+                if (reader.getLineNumber() > 0) {
+                    builder.append("at line ").append(reader.getLineNumber());
+                } else {
+                    builder.append("from range point ").append(range.getStart());
+                    if (range.getEnd().longValue() > range.getStart().longValue()) {
+                        builder.append(" to range point ").append(range.getEnd());
+                    } else {
+                        builder.append(", end range was: ").append(range.getEnd());
+                    }
+                }
+                IOException ex = new IOException(builder.toString());
+                ex.initCause(e);
+                throw ex;
+            } catch (NullPointerException e) {
+                IOException ex = new IOException();
+                ex.initCause(e);
+                throw ex;
             }
-            IOException ex = new IOException(builder.toString());
-            ex.initCause(e);
-            throw ex;
-        } catch (NullPointerException e) {
-            IOException ex = new IOException();
-            ex.initCause(e);
-            throw ex;
         }
     }
 
@@ -118,7 +120,7 @@ public class FastaIndexer implements BlockReader<Protein> {
         return indexHolder.containsKey(key);
     }
 
-    public Map<String,Range> getIndex() {
+    public Map<String, Range> getIndex() {
         return indexHolder;
     }
 }

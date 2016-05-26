@@ -33,7 +33,7 @@ public class MGFFormatter implements FileFormatter<String,Spectrum> {
                 .append(System.lineSeparator());
 
         builder.append("PEPMASS=").append(aSpectrum.getPrecursor())
-                .append(aSpectrum.getPrecursorIntensity() != 0.0
+                .append(aSpectrum.getPrecursorIntensity().compareTo(0.0) != 0
                         ? " " + aSpectrum.getPrecursorIntensity() + System.lineSeparator()
                         : System.lineSeparator());
 
@@ -149,7 +149,7 @@ public class MGFFormatter implements FileFormatter<String,Spectrum> {
                         }
                         readSpectrum.addPeak(currentPeak);
                     } catch (NumberFormatException e) {
-                        MalformedFileException ex = new MalformedFileException("could not parse a peak set\nline was " + splitMGFBlock);
+                        MalformedFileException ex = new MalformedFileException("could not parse a peak set\nline was " + s);
                         ex.initCause(e);
                         throw ex;
                     }

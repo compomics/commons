@@ -60,7 +60,7 @@ public class SimpleFastaManager implements FileManager<String,Protein> {
             return retrievedProtein;
         } catch (IOException e) {
             StoreAccessException aex = new StoreAccessException("could not read from fasta");
-            aex.initCause(aex);
+            aex.initCause(e);
             throw aex;
         }
     }
@@ -117,5 +117,13 @@ public class SimpleFastaManager implements FileManager<String,Protein> {
     @Override
     public Collection<Protein> retrieveAllFromStore() throws StoreAccessException, InvalidArgumentException {
         return retrieveMultipleFromStore(this.indexHolder.getIndex().keySet());
+    }
+
+    public void setParser(FastaParser parser) {
+        this.parser = parser;
+    }
+
+    public void setCache(SimpleCache<String, Protein> cache) {
+        this.cache = cache;
     }
 }

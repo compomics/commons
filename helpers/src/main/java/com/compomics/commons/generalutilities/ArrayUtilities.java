@@ -5,6 +5,7 @@ package com.compomics.commons.generalutilities;
  */
 public class ArrayUtilities {
 
+    private ArrayUtilities(){}
 
     public static int[] consecutiveInts(int n) {
         int[] returnArray = new int[n];

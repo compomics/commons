@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
  */
 public class RegexUtilities {
 
+    private RegexUtilities(){}
+
     public static final Pattern doublePattern = Pattern.compile("(\\d*\\.\\d*)");
     public static final Pattern MGFPeakPattern = Pattern.compile(doublePattern.pattern()+"\\s"+doublePattern.pattern());
 

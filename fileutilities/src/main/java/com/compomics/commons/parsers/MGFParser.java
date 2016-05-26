@@ -39,11 +39,11 @@ public class MGFParser {
 
         List<Spectrum> parsedSpectra = new ArrayList<>();
 
-        LineReader reader = new LineReader(new FileReader(file.toFile()));
 
-        String s = reader.readLine();
 
-        try {
+
+        try(LineReader reader = new LineReader(new FileReader(file.toFile()))) {
+            String s = reader.readLine();
             StringBuilder builder = new StringBuilder();
             while (s != null) {
                 if (s.toUpperCase().contains(blockSeparator.toUpperCase()) && builder.length() > 0) {

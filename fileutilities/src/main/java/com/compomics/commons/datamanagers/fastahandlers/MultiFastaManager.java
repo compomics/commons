@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class MultiFastaManager implements StoreManager<String, Protein> {
 
+    //todo finish this
     private List<SimpleCache<String, Protein>> fastaFiles = new ArrayList<>();
 
     private FastaParser parser = new FastaParser();

@@ -10,6 +10,8 @@ import java.nio.file.Path;
  */
 public class FastaManipulation {
 
+    //todo finish this
+
     public static boolean joinFiles(Writer outWriter, Path... filesToJoin){
         return false;
     }

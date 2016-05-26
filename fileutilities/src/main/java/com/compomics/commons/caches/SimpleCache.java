@@ -82,6 +82,6 @@ public class SimpleCache<T,U> implements StoreStrategy<T,U> {
     @Override
     public boolean purgeAll() {
         listCache.clear();
-        return listCache.size() == 0;
+        return listCache.isEmpty();
     }
 }

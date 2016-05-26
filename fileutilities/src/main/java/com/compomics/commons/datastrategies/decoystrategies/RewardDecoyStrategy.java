@@ -21,14 +21,14 @@ public class RewardDecoyStrategy implements DecoyStrategy {
         if ((aSequence.hashCode() / 2) % 2 == 1) {
 
             return decoySequence.append(
-                    aSequence.substring((int) Math.ceil(aSequence.length() / 2), aSequence.length()))
+                    aSequence.substring((int) Math.ceil(aSequence.length() / 2d), aSequence.length()))
                     .reverse()
                     .append(aSequence.substring(0, (int) Math.ceil(aSequence.length()))).toString();
         } else {
 
-            decoySequence.append(aSequence.substring(0, (int) Math.ceil(aSequence.length() / 2)));
+            decoySequence.append(aSequence.substring(0, (int) Math.ceil(aSequence.length() / 2d)));
             return decoySequence.append(
-                    new StringBuilder(aSequence.substring((int) Math.ceil(aSequence.length() / 2)))
+                    new StringBuilder(aSequence.substring((int) Math.ceil(aSequence.length() / 2d)))
                             .reverse()
                             .toString())
                     .toString();

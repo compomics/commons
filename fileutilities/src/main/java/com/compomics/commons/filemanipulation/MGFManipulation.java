@@ -23,6 +23,8 @@ public class MGFManipulation {
 
    static MGFFormatter mgfFormatter = new MGFFormatter();
 
+    private MGFManipulation(){}
+
 
     public static boolean joinFiles(Writer outWriter, FileManager<?,Spectrum>... filesToJoin) throws IOException, InvalidArgumentException {
 
@@ -56,14 +58,14 @@ public class MGFManipulation {
 
 
     public static boolean partitionFile(Path outputFolder, int partitionSize, String blockStartSeparator, Path fileToPartition) throws IOException {
-        LineReader reader = new LineReader(new FileReader(fileToPartition.toFile()));
         ChainedList<FileWriter> writers = new ChainedList<>();
         for (int i = 0; i < partitionSize; i++) {
             writers.add(new FileWriter(outputFolder.toString() + fileToPartition.getFileName() + "_" + i));
         }
         StringBuilder block = new StringBuilder();
-        String readLine = reader.readLine();
-        try {
+
+        try (LineReader reader = new LineReader(new FileReader(fileToPartition.toFile()))){
+            String readLine = reader.readLine();
             while (readLine != null) {
                 if (readLine.equals(blockStartSeparator) && block.length() != 0) {
                     writers.getNext().write(block.toString());
@@ -96,6 +98,7 @@ public class MGFManipulation {
             }
             outWriter.write(mgfFormatter.toFormat(allSpectra.get(i)));
         }
+        outWriter.close();
         return true;
     }
 }

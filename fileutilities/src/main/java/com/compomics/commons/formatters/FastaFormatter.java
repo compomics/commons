@@ -13,11 +13,9 @@ public class FastaFormatter implements FileFormatter<String, Protein> {
 
     @Override
     public String toFormat(Protein out) {
-        StringBuilder builder = new StringBuilder("");
-        builder.append(out.getHeader()).append("\n");
-        builder.append(out.getSequence());
         //todo add sequence formatting
-        return builder.toString();
+        return "" + out.getHeader() + "\n" +
+                out.getSequence();
     }
 
     @Override
@@ -28,7 +26,8 @@ public class FastaFormatter implements FileFormatter<String, Protein> {
             Protein out = new Protein(split[0]);
             StringBuilder sequence = new StringBuilder("");
             for (int i = 1; i < split.length; i++) {
-                sequence.append(split[i]);
+                //removes all non alphabetic characters, perhaps optional?
+                sequence.append(split[i].replaceAll("[^A-Z]",""));
             }
             out.setSequence(sequence.toString());
             return out;

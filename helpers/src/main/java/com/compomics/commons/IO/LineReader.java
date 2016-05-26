@@ -16,11 +16,6 @@ public class LineReader extends BufferedReader {
         super(in);
     }
 
-    @Override
-    public int read() throws IOException {
-        return super.read();
-    }
-
     /**
      * reads a line from the file in the underlying stream
      * @return a string or null if end of file
@@ -50,7 +45,6 @@ public class LineReader extends BufferedReader {
                     s.append((char) read());
                 }
                 returnString = s.toString();
-                s = new StringBuilder();
                 break;
             }
             readChar = read();

@@ -19,6 +19,7 @@ public class Header {
     public Map<String,Object> getAdditionalInformation(){
     return additionalInformation;
     }
+
     public Header setAdditionalInformation(Map<String,Object> parsedHeader){
         additionalInformation = parsedHeader;
         return this;

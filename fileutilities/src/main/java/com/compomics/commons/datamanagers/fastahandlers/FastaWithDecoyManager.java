@@ -18,6 +18,8 @@ import java.util.Collection;
  */
 public class FastaWithDecoyManager implements FileManager<String,Protein> {
 
+    //todo finish this
+
     FastaParser originalFastaFile = new FastaParser();
 
     DecoyStrategy decoyStrategy;

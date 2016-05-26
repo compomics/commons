@@ -9,6 +9,8 @@ import java.util.List;
  */
 public class StringUtilities {
 
+    private StringUtilities(){}
+
     public static List<Character> convertStringToListOfCharacters(String aString) {
         List<Character> list = new ArrayList<>();
         for (char c : aString.toCharArray()) {
@@ -28,10 +30,12 @@ public class StringUtilities {
 
             char[] chars = aString.toCharArray();
 
+            @Override
             public int size() {
                 return chars.length;
             }
 
+            @Override
             public Character get(int index) {
                 return chars[index];
             }
